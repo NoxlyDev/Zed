@@ -1,0 +1,338 @@
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -96,6 +96,8 @@
+     "crates/google_ai",
+     "crates/gpui",
+     "crates/gpui_apple",
++    "crates/gpui_android",
++    "crates/zed_android",
+     "crates/gpui_ios",
+     "crates/gpui_linux",
+     "crates/gpui_macos",
+@@ -375,6 +377,7 @@
+ google_ai = { path = "crates/google_ai" }
+ gpui = { path = "crates/gpui", default-features = false }
+ gpui_apple = { path = "crates/gpui_apple" }
++gpui_android = { path = "crates/gpui_android" }
+ gpui_ios = { path = "crates/gpui_ios" }
+ gpui_linux = { path = "crates/gpui_linux", default-features = false }
+ gpui_macos = { path = "crates/gpui_macos", default-features = false }
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -718,6 +718,49 @@
+ ]
+ 
+ [[package]]
++name = "android-activity"
++version = "0.6.1"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "0f2a1bb052857d5dd49572219344a7332b31b76405648eabac5bc68978251bcd"
++dependencies = [
++ "android-properties",
++ "bitflags 2.13.1",
++ "cc",
++ "jni 0.22.4",
++ "libc",
++ "log",
++ "ndk",
++ "ndk-context",
++ "ndk-sys",
++ "num_enum",
++ "simd_cesu8",
++ "thiserror 2.0.21",
++]
++
++[[package]]
++name = "android-properties"
++version = "0.2.2"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "fc7eb209b1518d6bb87b283c20095f5228ecda460da70b44f0802523dea6da04"
++
++[[package]]
++name = "android_log-sys"
++version = "0.3.2"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "84521a3cf562bc62942e294181d9eef17eb38ceb8c68677bc49f144e4c3d4f8d"
++
++[[package]]
++name = "android_logger"
++version = "0.14.1"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "05b07e8e73d720a1f2e4b6014766e6039fd2e96a4fa44e2a78d0e1fa2ff49826"
++dependencies = [
++ "android_log-sys",
++ "env_filter",
++ "log",
++]
++
++[[package]]
+ name = "android_system_properties"
+ version = "0.1.5"
+ source = "registry+https://github.com/rust-lang/crates.io-index"
+@@ -2718,7 +2761,7 @@
+  "maybe-owned",
+  "rustix",
+  "rustix-linux-procfs",
+- "windows-sys 0.60.2",
++ "windows-sys 0.61.2",
+  "winx",
+ ]
+ 
+@@ -5006,7 +5049,7 @@
+  "libc",
+  "option-ext",
+  "redox_users",
+- "windows-sys 0.59.0",
++ "windows-sys 0.61.2",
+ ]
+ 
+ [[package]]
+@@ -5791,7 +5834,7 @@
+ checksum = "39cab71617ae0d63f51a36d69f866391735b51691dbda63cf6f96d042b63efeb"
+ dependencies = [
+  "libc",
+- "windows-sys 0.52.0",
++ "windows-sys 0.61.2",
+ ]
+ 
+ [[package]]
+@@ -6847,7 +6890,7 @@
+  "libc",
+  "log",
+  "rustversion",
+- "windows-link 0.1.3",
++ "windows-link 0.2.1",
+  "windows-result 0.4.1",
+ ]
+ 
+@@ -6979,7 +7022,7 @@
+  "gobject-sys",
+  "libc",
+  "system-deps",
+- "windows-sys 0.52.0",
++ "windows-sys 0.61.2",
+ ]
+ 
+ [[package]]
+@@ -7442,6 +7485,23 @@
+ ]
+ 
+ [[package]]
++name = "gpui_android"
++version = "0.1.0"
++dependencies = [
++ "android-activity",
++ "anyhow",
++ "futures 0.3.34",
++ "gpui",
++ "gpui_wgpu",
++ "jni 0.21.1",
++ "log",
++ "ndk",
++ "parking_lot",
++ "raw-window-handle",
++ "uuid",
++]
++
++[[package]]
+ name = "gpui_apple"
+ version = "0.1.0"
+ dependencies = [
+@@ -7606,6 +7666,7 @@
+  "console_error_panic_hook",
+  "criterion",
+  "gpui",
++ "gpui_android",
+  "gpui_ios",
+  "gpui_linux",
+  "gpui_macos",
+@@ -11064,7 +11125,7 @@
+ source = "registry+https://github.com/rust-lang/crates.io-index"
+ checksum = "536bfad37a309d62069485248eeaba1e8d9853aaf951caaeaed0585a95346f08"
+ dependencies = [
+- "windows-sys 0.60.2",
++ "windows-sys 0.61.2",
+ ]
+ 
+ [[package]]
+@@ -11246,6 +11307,7 @@
+  "log",
+  "ndk-sys",
+  "num_enum",
++ "raw-window-handle",
+  "thiserror 1.0.69",
+ ]
+ 
+@@ -11459,7 +11521,7 @@
+ source = "registry+https://github.com/rust-lang/crates.io-index"
+ checksum = "7957b9740744892f114936ab4a57b3f487491bbeafaf8083688b16841a4240e5"
+ dependencies = [
+- "windows-sys 0.59.0",
++ "windows-sys 0.61.2",
+ ]
+ 
+ [[package]]
+@@ -14252,8 +14314,8 @@
+ source = "registry+https://github.com/rust-lang/crates.io-index"
+ checksum = "03da047801ff44bb6a4d407d4860c05fd70bb81714e6b2f3812603d5b145b042"
+ dependencies = [
+- "heck 0.4.1",
+- "itertools 0.10.5",
++ "heck 0.5.0",
++ "itertools 0.14.0",
+  "log",
+  "multimap",
+  "petgraph",
+@@ -14272,7 +14334,7 @@
+ checksum = "b570b25f7617e43d59005d0990ccb79e950a423952cea19671b7a876da390adf"
+ dependencies = [
+  "anyhow",
+- "itertools 0.10.5",
++ "itertools 0.14.0",
+  "proc-macro2",
+  "quote",
+  "syn 2.0.117",
+@@ -15638,7 +15700,7 @@
+  "errno 0.3.14",
+  "libc",
+  "linux-raw-sys",
+- "windows-sys 0.52.0",
++ "windows-sys 0.61.2",
+ ]
+ 
+ [[package]]
+@@ -15736,7 +15798,7 @@
+  "security-framework",
+  "security-framework-sys",
+  "webpki-root-certs",
+- "windows-sys 0.52.0",
++ "windows-sys 0.61.2",
+ ]
+ 
+ [[package]]
+@@ -16929,7 +16991,7 @@
+ source = "registry+https://github.com/rust-lang/crates.io-index"
+ checksum = "c1c97747dbf44bb1ca44a561ece23508e99cb592e862f22222dcf42f51d1e451"
+ dependencies = [
+- "heck 0.4.1",
++ "heck 0.5.0",
+  "proc-macro2",
+  "quote",
+  "syn 2.0.117",
+@@ -16998,7 +17060,7 @@
+ checksum = "c3d1e2c7f27f8d4cb10542a02c49005dbd6e93095799d6f3be745fae9f8fedd4"
+ dependencies = [
+  "libc",
+- "windows-sys 0.60.2",
++ "windows-sys 0.61.2",
+ ]
+ 
+ [[package]]
+@@ -17312,7 +17374,7 @@
+  "cfg-if",
+  "libc",
+  "psm",
+- "windows-sys 0.60.2",
++ "windows-sys 0.61.2",
+ ]
+ 
+ [[package]]
+@@ -18054,7 +18116,7 @@
+  "getrandom 0.4.1",
+  "once_cell",
+  "rustix",
+- "windows-sys 0.52.0",
++ "windows-sys 0.61.2",
+ ]
+ 
+ [[package]]
+@@ -20890,7 +20952,7 @@
+ source = "registry+https://github.com/rust-lang/crates.io-index"
+ checksum = "c2a7b1c03c876122aa43f3020e6c3c3ee5c05081c9a00739faf7503aeba10d22"
+ dependencies = [
+- "windows-sys 0.48.0",
++ "windows-sys 0.61.2",
+ ]
+ 
+ [[package]]
+@@ -22821,6 +22883,21 @@
+ ]
+ 
+ [[package]]
++name = "zed_android"
++version = "0.1.0"
++dependencies = [
++ "android-activity",
++ "android_logger",
++ "anyhow",
++ "futures 0.3.34",
++ "gpui",
++ "gpui_android",
++ "gpui_platform",
++ "jni 0.21.1",
++ "log",
++]
++
++[[package]]
+ name = "zed_credentials_provider"
+ version = "0.1.0"
+ dependencies = [
+--- a/.gitignore
++++ b/.gitignore
+@@ -62,3 +62,10 @@
+ 
+ .local*
+ .cache
++
++# Android
++android/.gradle/
++android/build/
++android/app/build/
++android/app/src/main/jniLibs/
++android/local.properties
+--- a/crates/gpui/src/gpui.rs
++++ b/crates/gpui/src/gpui.rs
+@@ -72,6 +72,7 @@
+     test,
+     target_os = "windows",
+     target_os = "linux",
++    target_os = "android",
+     target_family = "wasm",
+     feature = "test-support",
+     feature = "bench-support"
+@@ -109,7 +110,12 @@
+     pub use serde_json;
+ }
+ 
+-#[cfg(any(target_os = "windows", target_os = "linux", target_family = "wasm"))]
++#[cfg(any(
++    target_os = "windows",
++    target_os = "linux",
++    target_os = "android",
++    target_family = "wasm"
++))]
+ pub use queue::{PriorityQueueReceiver, PriorityQueueSender};
+ 
+ pub use accesskit::{Action as AccessibleAction, Orientation, Role, Toggled};
+--- a/crates/gpui_platform/Cargo.toml
++++ b/crates/gpui_platform/Cargo.toml
+@@ -66,6 +66,9 @@
+ [target.'cfg(target_os = "ios")'.dependencies]
+ gpui_ios.workspace = true
+ 
++[target.'cfg(target_os = "android")'.dependencies]
++gpui_android.workspace = true
++
+ [target.'cfg(target_os = "windows")'.dependencies]
+ gpui_windows.workspace = true
+ gpui = { workspace = true, features = ["windows-manifest"] }
+--- a/crates/gpui_platform/src/gpui_platform.rs
++++ b/crates/gpui_platform/src/gpui_platform.rs
+@@ -62,6 +62,7 @@
+ pub fn current_platform(headless: bool) -> Rc<dyn Platform> {
+     cfg_select! {
+         target_os = "ios" => gpui_ios::current_platform(headless),
++        target_os = "android" => gpui_android::current_platform(headless),
+         target_os = "macos" => Rc::new(gpui_macos::MacPlatform::new(headless)),
+         target_os = "windows" => Rc::new(
+             gpui_windows::WindowsPlatform::new(headless)

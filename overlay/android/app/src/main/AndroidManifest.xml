@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Lets Zed ask Termux to run cargo. Granted at runtime by the user. -->
+    <uses-permission android:name="com.termux.permission.RUN_COMMAND" />
+    <!-- Projects live in /sdcard/ZedAndroid so both this app and Termux can reach them. -->
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+
+    <!-- Package visibility: required to talk to Termux on Android 11+. -->
+    <queries>
+        <package android:name="com.termux" />
+    </queries>
+
+    <application
+        android:label="Zed"
+        android:allowBackup="true"
+        android:hasCode="true"
+        android:theme="@style/AppTheme">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustResize"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|keyboard|navigation|uiMode|density|smallestScreenSize|fontScale|locale|layoutDirection">
+
+            <meta-data android:name="android.app.lib_name" android:value="zed_android" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
